@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>bouncing balls act 11</title>
+</head>
+<body>
+    <canvas class="myCanvas">
+       </canvas>
+       <style>
+           body {
+            margin:0;
+            overflow:hidden;
+            background-color: pink;
+}
+       </style>
+       <script>
+       //making the canvas working
+           const canvas = document.querySelector('.myCanvas');
+           const width = canvas.width = window.innerWidth;
+           const height = canvas.height = window.innerHeight;
+           const ctx = canvas.getContext('2d');
+           //making a black background
+           ctx.fillStyle = 'rgb(0,0,0)';
+           ctx.fillRect(0,0,width,height);
+           alert("click on the screen to make more circles")
+           
+           
+           var circles = new Array();//making a Array with the circels 
+    
+           function degToRad(degrees) { //a function that conwerts degrees to radians
+               return degrees * Math.PI / 180;
+           }
+           function rand(min, max) {// a function that pick a random number 
+               return Math.floor(Math.random() * (max-min+1)) + (min);
+           }
+           function circle(radius, startx, starty, color){
+               this.radius = radius;
+               this.x = startx;
+               this.y = starty;
+               this.color = color;
+               this.velx = rand(-8, 8)
+               this.vely = rand(-8, 8)//vel means velocity
+               while (this.velx == 0){
+                    this.velx = rand(-8, 8)
+               }
+               while (this.vely == 0){
+                    this.vely = rand(-8, 8)
+               }
+               
+               
+               this.draw = function () {//draws the circel to the screen
+                   ctx.fillStyle = color;
+                   ctx.beginPath();
+                   ctx.arc(this.x, this.y, this.radius, degToRad(0), degToRad(360), false);
+                   ctx.fill();
+               }
+               this.update = function () {
+                   
+                   this.x = this.x += this.velx;
+                   this.y = this.y += this.vely;
+                   if(this.x - this.radius < 0){
+                       this.velx = this.velx - (this.velx * 2);
+                   }
+                   if(this.y - this.radius < 0){
+                       this.vely = this.vely - (this.vely * 2);
+                   }
+                   if(this.x + this.radius > width){
+                       this.velx = this.velx - (this.velx * 2);
+                   }
+                   if(this.y + this.radius > height){
+                       this.vely = this.vely - (this.vely * 2);
+                   }
+               }
+           }
+           function loop(){//main loop
+               ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+               ctx.fillRect(0, 0, width, height);
+               
+               canvas.onmousedown = function() {
+                   newcircle();
+               };
+               
+               for(var index = 0; index < circles.length; index++) {
+                   circles[index].draw();
+                   circles[index].update();
+               }
+               
+               requestAnimationFrame(loop);
+           }
+           function newcircle (){
+              var newcircle = new circle(rand(10, 30) ,rand(50, width - 30), rand(50, height - 30), 'rgb(' + rand(0, 255) + ', ' + rand(0, 255) + ', ' + rand(0, 255) + ')'); 
+              circles[circles.length] = newcircle;
+           }
+           
+           /*var newcircle = new circle(50, 150, 50, 'rgb(255, 255, 255)');
+           circles[circles.length] = newcircle;*/
+          
+               newcircle();
+               newcircle();
+               newcircle();
+           
+           //add_to_array_circels(new circle(50, 50, 50, 'rgb(255, 255, 255)'));
+           loop();
+
+       </script>
+
+    
+</body>
+</html>
